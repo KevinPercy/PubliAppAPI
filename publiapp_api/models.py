@@ -52,3 +52,86 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """Return the string representation of our user"""
         return self.email
+
+
+class Anuncio(models.Model):
+    """Datos de anuncio"""
+    titulo_anuncio = models.CharField(max_length=100)
+    fecha_anuncio = models.DateTimeField(default=timezone.now)
+    fecha_fin = models.DateTimeField(default=timezone.now)
+    direccion = models.CharField(max_length=150)
+    telefono1 = models.CharField(max_length=15)
+    telefono2 = models.CharField(max_length=15)
+    estado = models.BooleanField(default=True)
+    nivel_anunciante = models.CharField(max_length=1)
+    id_anunciante = models.CharField(max_length=4)
+    id_articulo = models.CharField(max_length=5)
+    id_negocio = models.CharField(max_length=4)
+    id_servicio = models.CharField(max_length=4)
+
+    def __str__(self):
+        """Retornar el titulo del anuncio como string"""
+        return self.titulo_anuncio
+
+
+class Articulo(models.Model):
+    """Datos de los articulos"""
+    nombre_articulo = models.CharField(max_length=100)
+    descripcion_articulo = models.CharField(max_length=300)
+    precio = models.FloatField()
+    precio_promo = models.FloatField()
+    id_categoria = models.CharField(max_length=5)
+    id_resenia = models.CharField(max_length=5)
+
+    def __str__(self):
+        """retorna el nombre del articulo"""
+        return self.nombre_articulo
+
+
+class Negocio(models.Model):
+    """Datos del Negocio"""
+    nombre_negocio = models.CharField(max_length=100)
+    descripcion_negocio = models.CharField(max_length=300)
+    precio = models.FloatField()
+    precio_promo = models.FloatField()
+    id_categoria = models.CharField(max_length=5)
+    id_resenia = models.CharField(max_length=5)
+
+    def __str__(self):
+        """retorna el nombre del negocio"""
+        return self.nombre_negocio
+
+
+class Servicio(models.Model):
+    """Datos del Servicio"""
+    nombre_servicio = models.CharField(max_length=100)
+    descripcion_servicio = models.CharField(max_length=300)
+    precio = models.FloatField()
+    precio_promo = models.FloatField()
+    id_categoria = models.CharField(max_length=5)
+    id_resenia = models.CharField(max_length=5)
+
+    def __str__(self):
+        """retorna el nombre del servicio"""
+        return self.nombre_servicio
+
+
+class Categoria(models.Model):
+    """Datos de las Categorias"""
+    nombre_categoria = models.CharField(max_length=40)
+    tipo_categoria = models.CharField(max_length=10)
+
+    def __str__(self):
+        """retorna el nombre de la categoría"""
+        return self.nombre_categoria
+
+
+class Resenia(models.Model):
+    """Datos de las Resenias"""
+    comentario = models.CharField(max_length=40)
+    puntuacion = models.IntegerField(default=0)
+    equipo = models.CharField(max_length=100, default='ND')  # No Definido
+
+    def __str__(self):
+        """retorna el nombre de la resenia"""
+        return self.equipo
