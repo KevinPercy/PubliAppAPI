@@ -54,66 +54,24 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class Anuncio(models.Model):
-    """Datos de anuncio"""
-    titulo_anuncio = models.CharField(max_length=100)
-    fecha_anuncio = models.DateTimeField(default=timezone.now)
-    fecha_fin = models.DateTimeField(default=timezone.now)
-    direccion = models.CharField(max_length=150)
-    telefono1 = models.CharField(max_length=15)
-    telefono2 = models.CharField(max_length=15)
-    estado = models.BooleanField(default=True)
-    nivel_anunciante = models.CharField(max_length=1)
-    id_anunciante = models.CharField(max_length=4)
-    id_articulo = models.CharField(max_length=5)
-    id_negocio = models.CharField(max_length=4)
-    id_servicio = models.CharField(max_length=4)
-
-    def __str__(self):
-        """Retornar el titulo del anuncio como string"""
-        return self.titulo_anuncio
+class Rol(models.Model):
+    """Datos de Rol"""
+    rol = models.CharField(max_length=2)
 
 
-class Articulo(models.Model):
-    """Datos de los articulos"""
-    nombre_articulo = models.CharField(max_length=100)
-    descripcion_articulo = models.CharField(max_length=300)
-    precio = models.FloatField()
-    precio_promo = models.FloatField()
-    id_categoria = models.CharField(max_length=5)
-    id_resenia = models.CharField(max_length=5)
-
-    def __str__(self):
-        """retorna el nombre del articulo"""
-        return self.nombre_articulo
-
-
-class Negocio(models.Model):
-    """Datos del Negocio"""
-    nombre_negocio = models.CharField(max_length=100)
-    descripcion_negocio = models.CharField(max_length=300)
-    precio = models.FloatField()
-    precio_promo = models.FloatField()
-    id_categoria = models.CharField(max_length=5)
-    id_resenia = models.CharField(max_length=5)
-
-    def __str__(self):
-        """retorna el nombre del negocio"""
-        return self.nombre_negocio
-
-
-class Servicio(models.Model):
-    """Datos del Servicio"""
-    nombre_servicio = models.CharField(max_length=100)
-    descripcion_servicio = models.CharField(max_length=300)
-    precio = models.FloatField()
-    precio_promo = models.FloatField()
-    id_categoria = models.CharField(max_length=5)
-    id_resenia = models.CharField(max_length=5)
-
-    def __str__(self):
-        """retorna el nombre del servicio"""
-        return self.nombre_servicio
+class Anunciante(models.Model):
+    """Datos del Anunciante"""
+    nombre = models.CharField(max_length=120)
+    apellidos = models.CharField(max_length=120)
+    dni = models.CharField(max_length=8)
+    email = models.CharField(max_length=50)
+    fecha_registro = models.DateTimeField(default=timezone.now)
+    id_rol = models.ForeignKey(
+        Rol,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
 
 
 class Categoria(models.Model):
@@ -131,7 +89,133 @@ class Resenia(models.Model):
     comentario = models.CharField(max_length=40)
     puntuacion = models.IntegerField(default=0)
     equipo = models.CharField(max_length=100, default='ND')  # No Definido
+    usuario = models.CharField(max_length=100)
 
     def __str__(self):
         """retorna el nombre de la resenia"""
         return self.equipo
+
+
+class Articulo(models.Model):
+    """Datos de los articulos"""
+    nombre_articulo = models.CharField(max_length=100)
+    descripcion_articulo = models.CharField(max_length=300)
+    precio = models.FloatField()
+    precio_promo = models.FloatField()
+    id_categoria = models.ForeignKey(
+        Categoria,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    id_resenia = models.ForeignKey(
+        Resenia,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        """retorna el nombre del articulo"""
+        return self.nombre_articulo
+
+
+class Negocio(models.Model):
+    """Datos del Negocio"""
+    nombre_negocio = models.CharField(max_length=100)
+    descripcion_negocio = models.CharField(max_length=300)
+    precio = models.FloatField()
+    precio_promo = models.FloatField()
+    id_categoria = models.ForeignKey(
+        Categoria,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    id_resenia = models.ForeignKey(
+        Resenia,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        """retorna el nombre del negocio"""
+        return self.nombre_negocio
+
+
+class Servicio(models.Model):
+    """Datos del Servicio"""
+    nombre_servicio = models.CharField(max_length=100)
+    descripcion_servicio = models.CharField(max_length=300)
+    precio = models.FloatField()
+    precio_promo = models.FloatField()
+    id_categoria = models.ForeignKey(
+        Categoria,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    id_resenia = models.ForeignKey(
+        Resenia,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        """retorna el nombre del servicio"""
+        return self.nombre_servicio
+
+
+class Anuncio(models.Model):
+    """Datos de anuncio"""
+    titulo_anuncio = models.CharField(max_length=100)
+    fecha_anuncio = models.DateTimeField(default=timezone.now)
+    fecha_fin = models.DateTimeField(default=timezone.now)
+    direccion = models.CharField(max_length=150)
+    telefono1 = models.CharField(max_length=15)
+    telefono2 = models.CharField(max_length=15)
+    estado = models.PositiveIntegerField(default=0)  # positive integer
+    nivel_anuncio = models.CharField(max_length=1)
+    id_anunciante = models.ForeignKey(
+        Anunciante,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    id_articulo = models.ForeignKey(
+        Articulo,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    id_negocio = models.ForeignKey(
+        Negocio,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    id_servicio = models.ForeignKey(
+        Servicio,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        """Retornar el titulo del anuncio como string"""
+        return self.titulo_anuncio
+
+
+class Imagen(models.Model):
+    """Datos de la imagen"""
+    imagen = models.FileField(blank=False, null=False)
+    es_principal = models.BooleanField(default=False)
+    id_anuncio = models.ForeignKey(
+        Anuncio,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.imagen.name

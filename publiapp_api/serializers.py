@@ -42,7 +42,7 @@ class AnuncioSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Anuncio
         fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
-                  "estado", "nivel_anunciante", "id_anunciante", "id_articulo", "id_negocio", "id_servicio")
+                  "estado", "nivel_anuncio", "id_anunciante", "id_articulo", "id_negocio", "id_servicio")
 
 
 class ArticuloSerializer(serializers.ModelSerializer):
