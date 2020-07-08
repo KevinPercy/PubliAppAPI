@@ -103,3 +103,10 @@ class AnuncioSerializer(serializers.ModelSerializer):
         model = models.Anuncio
         fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
                   "estado", "nivel_anuncio", "id_anunciante", "id_articulo", "id_negocio", "id_servicio")
+
+
+class ImagenSerializer(serializers.ModelSerializer):
+    """Serializer para las imagenes"""
+    class Meta:
+        model = models.Imagen
+        fields = "__all__"
