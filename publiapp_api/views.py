@@ -9,6 +9,7 @@ from rest_framework.settings import api_settings
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.authtoken.models import Token
+from rest_framework.parsers import FileUploadParser
 
 from publiapp_api import serializers
 from publiapp_api import models
@@ -105,3 +106,34 @@ class ReseniaViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ReseniaSerializer
     queryset = models.Resenia.objects.all()
     permission_classes = (permissions.IsSafeMethod,)
+
+
+class RolViewSet(viewsets.ModelViewSet):
+    """Administra la creacion y modificacion de foles"""
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = serializers.RolSerializer
+    queryset = models.Rol.objects.all()
+    permission_classes = (permissions.IsSafeMethod,)
+
+
+class AnuncianteViewSet(viewsets.ModelViewSet):
+    """Administra la creacion y modificacion de Anunciantes"""
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = serializers.AnuncianteSerializer
+    queryset = models.Anunciante.objects.all()
+    permissions_classes = (permissions.IsSafeMethod,)
+
+
+class ImagenUploadView(APIView):
+    """Administra la carga de imagenes """
+    parser_class = (FileUploadParser,)
+
+    def post(self, request, *args, **kwargs):
+
+        file_serializer = serializers.ImagenSerializer(data=request.data)
+
+        if file_serializer.is_valid():
+            file_serializer.save()
+            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
