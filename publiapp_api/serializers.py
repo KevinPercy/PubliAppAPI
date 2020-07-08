@@ -37,12 +37,40 @@ class PasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(required=True)
 
 
-class AnuncioSerializer(serializers.ModelSerializer):
-    """Serializer para anuncios"""
+class RolSerializer(serializers.ModelSerializer):
+    """Serializer para Roles"""
+
     class Meta:
-        model = models.Anuncio
-        fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
-                  "estado", "nivel_anuncio", "id_anunciante", "id_articulo", "id_negocio", "id_servicio")
+        model = models.Rol
+        fields = ("rol")
+
+
+class AnuncianteSerializer(serializers.ModelSerializer):
+    """Serializer para anunciantes"""
+
+    class Meta:
+        model = models.Anunciante
+        fields = ("id", "nombre", "apellidos", "dni",
+                  "email", "fecha_registro", "id_rol")
+        # extra_kwargs = {
+        #     'id_rol': {
+        #         'read_only': True
+        #     }
+        # }
+
+
+class CategoriaSerializer(serializers.ModelSerializer):
+    """Serializer para categorias"""
+    class Meta:
+        model = models.Categoria
+        fields = ("id", "nombre_categoria", "tipo_categoria")
+
+
+class ReseniaSerializer(serializers.ModelSerializer):
+    """Serializer para resenia"""
+    class Meta:
+        model = models.Resenia
+        fields = ("id", "comentario", "puntuacion", "equipo")
 
 
 class ArticuloSerializer(serializers.ModelSerializer):
@@ -69,15 +97,9 @@ class ServicioSerializer(serializers.ModelSerializer):
                   "precio", "precio_promo", "id_categoria", "id_resenia")
 
 
-class CategoriaSerializer(serializers.ModelSerializer):
-    """Serializer para categorias"""
+class AnuncioSerializer(serializers.ModelSerializer):
+    """Serializer para anuncios"""
     class Meta:
-        model = models.Categoria
-        fields = ("id", "nombre_categoria", "tipo_categoria")
-
-
-class ReseniaSerializer(serializers.ModelSerializer):
-    """Serializer para resenia"""
-    class Meta:
-        model = models.Resenia
-        fields = ("id", "comentario", "puntuacion", "equipo")
+        model = models.Anuncio
+        fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
+                  "estado", "nivel_anuncio", "id_anunciante", "id_articulo", "id_negocio", "id_servicio")
