@@ -107,8 +107,8 @@ class AnuncioSerializer(serializers.ModelSerializer):
 
 class ImagenSerializer(serializers.ModelSerializer):
     """Serializer para las imagenes"""
-    imagen = serializers.ImageField(max_length=None, use_url=True)
-    es_principal = serializers.BooleanField(default=False)
+    # imagen = serializers.ImageField(max_length=None, use_url=True)
+    # es_principal = serializers.BooleanField(default=False)
 
     class Meta:
         model = models.Imagen

@@ -124,22 +124,7 @@ class AnuncianteViewSet(viewsets.ModelViewSet):
     permissions_classes = (permissions.IsSafeMethod,)
 
 
-class ImagenUploadView(APIView):
+class ImagenUploadView(viewsets.ModelViewSet):
     """Administra la carga de imagenes """
-    parser_class = (FileUploadParser,)
-
-    def post(self, request, *args, **kwargs):
-
-        file_serializer = serializers.ImagenSerializer(data=request.data)
-
-        if file_serializer.is_valid():
-            file_serializer.save()
-            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def get(self, request, format=None):
-        """Retornar la lista de imagenes en la db"""
-        imagenes = models.Imagen.objects.all()
-        serializer = serializers.ImagenSerializer(imagenes)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    queryset = models.Imagen.objects.all()
+    serializer_class = serializers.ImagenSerializer
