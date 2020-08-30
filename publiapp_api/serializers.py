@@ -42,7 +42,7 @@ class RolSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Rol
-        fields = ("rol")
+        fields = "__all__"
 
 
 class AnuncianteSerializer(serializers.ModelSerializer):
@@ -107,6 +107,9 @@ class AnuncioSerializer(serializers.ModelSerializer):
 
 class ImagenSerializer(serializers.ModelSerializer):
     """Serializer para las imagenes"""
+    imagen = serializers.ImageField(max_length=None, use_url=True)
+    es_principal = serializers.BooleanField(default=False)
+
     class Meta:
         model = models.Imagen
-        fields = "__all__"
+        fields = ('imagen', 'es_principal', 'id_anuncio')

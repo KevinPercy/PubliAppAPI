@@ -58,6 +58,10 @@ class Rol(models.Model):
     """Datos de Rol"""
     rol = models.CharField(max_length=2)
 
+    def __str__(self):
+        """retornar el valor de rol """
+        return self.rol
+
 
 class Anunciante(models.Model):
     """Datos del Anunciante"""
