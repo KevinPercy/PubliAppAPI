@@ -97,14 +97,6 @@ class ServicioSerializer(serializers.ModelSerializer):
                   "precio", "precio_promo", "id_categoria", "id_resenia")
 
 
-class AnuncioSerializer(serializers.ModelSerializer):
-    """Serializer para anuncios"""
-    class Meta:
-        model = models.Anuncio
-        fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
-                  "estado", "nivel_anuncio", "id_anunciante", "id_articulo", "id_negocio", "id_servicio")
-
-
 class ImagenSerializer(serializers.ModelSerializer):
     """Serializer para las imagenes"""
     # imagen = serializers.ImageField(max_length=None, use_url=True)
@@ -113,3 +105,36 @@ class ImagenSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Imagen
         fields = ('imagen', 'es_principal', 'id_anuncio')
+
+
+class AnuncioSerializer(serializers.ModelSerializer):
+    """Serializer para anuncios"""
+
+    imagenes = ImagenSerializer(many=True)
+
+    class Meta:
+        model = models.Anuncio
+        fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
+                  "estado", "nivel_anuncio", "id_anunciante", "id_articulo", "id_negocio", "id_servicio", "imagenes")
+
+    def create(self, validated_data):
+        anuncio = models.Anuncio(titulo_anuncio=validated_data.get("titulo_anuncio"),
+                                 fecha_anuncio=validated_data.get(
+                                     "fecha_anuncio"),
+                                 fecha_fin=validated_data.get("fecha_fin"),
+                                 direccion=validated_data.get("direccion"),
+                                 telefono1=validated_data.get("telefono1"),
+                                 telefono2=validated_data.get("telefono2"),
+                                 estado=validated_data.get("estado"),
+                                 nivel_anuncio=validated_data.get(
+                                     "nivel_anuncio"),
+                                 id_anunciante=validated_data.get(
+                                     "id_anunciante"),
+                                 id_articulo=validated_data.get("id_articulo"),
+                                 id_servicio=validated_data.get("id_servicio")
+                                 )
+        anuncio.save()
+        imagenes = validated_data.get('imagenes')
+        for imagen in imagenes:
+            models.Imagen.objects.create(id_anuncio=anuncio, **imagen)
+        return validated_data

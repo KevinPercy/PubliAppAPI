@@ -218,7 +218,8 @@ class Imagen(models.Model):
     es_principal = models.BooleanField(default=False)
     id_anuncio = models.ForeignKey(
         Anuncio,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='imagenes'
     )
 
     def __str__(self):
