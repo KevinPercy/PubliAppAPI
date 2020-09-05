@@ -182,25 +182,25 @@ class Anuncio(models.Model):
     telefono2 = models.CharField(max_length=15)
     estado = models.PositiveIntegerField(default=0)  # positive integer
     nivel_anuncio = models.CharField(max_length=1)
-    id_anunciante = models.ForeignKey(
+    anunciante = models.ForeignKey(
         Anunciante,
         models.SET_NULL,
         blank=True,
         null=True,
     )
-    id_articulo = models.ForeignKey(
+    articulo = models.ForeignKey(
         Articulo,
         models.SET_NULL,
         blank=True,
         null=True,
     )
-    id_negocio = models.ForeignKey(
+    negocio = models.ForeignKey(
         Negocio,
         models.SET_NULL,
         blank=True,
         null=True,
     )
-    id_servicio = models.ForeignKey(
+    servicio = models.ForeignKey(
         Servicio,
         models.SET_NULL,
         blank=True,
