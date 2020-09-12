@@ -60,10 +60,12 @@ class UserLoginApiView(ObtainAuthToken):
         return Response({"token": token.key, "id": token.user_id})
 
 
-class AnuncioViewSet(viewsets.ModelViewSet):
+class AnunciosViewSet(viewsets.ModelViewSet):
     """Administra la creacion y modificacion de anuncios"""
+    search_fields = ['titulo_anuncio']
+    filter_backends = (filters.SearchFilter,)
     authentication_classes = (TokenAuthentication,)
-    serializer_class = serializers.AnuncioSerializer
+    serializer_class = serializers.AnunciosSerializer
     queryset = models.Anuncio.objects.all()
     permission_classes = (permissions.IsSafeMethod,)
 

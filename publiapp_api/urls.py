@@ -5,7 +5,7 @@ from publiapp_api import views
 
 router = DefaultRouter()
 router.register('profiles', views.UserProfileViewSet)
-router.register('anuncios', views.AnuncioViewSet)
+router.register('anuncios', views.AnunciosViewSet)
 router.register('articulos', views.ArticuloViewSet)
 router.register('negocios', views.NegocioViewSet)
 router.register('servicios', views.ServicioViewSet)
