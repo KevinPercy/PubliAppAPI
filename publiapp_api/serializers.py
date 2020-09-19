@@ -94,7 +94,7 @@ class ArticuloSerializer(serializers.ModelSerializer):
     """Serializer para Articulos"""
     class Meta:
         model = models.Articulo
-        fields = ("id", "nombre_articulo", "descripcion_articulo",
+        fields = ("id", "nombre", "descripcion",
                   "precio", "precio_promo", "id_categoria", "id_resenia")
 
 
@@ -102,7 +102,7 @@ class NegocioSerializer(serializers.ModelSerializer):
     """Serializer para negocios"""
     class Meta:
         model = models.Negocio
-        fields = ("id", "nombre_negocio", "descripcion_negocio",
+        fields = ("id", "nombre", "descripcion",
                   "precio", "precio_promo", "id_categoria", "id_resenia")
 
 
@@ -110,7 +110,7 @@ class ServicioSerializer(serializers.ModelSerializer):
     """Serializer para servicios"""
     class Meta:
         model = models.Servicio
-        fields = ("id", "nombre_servicio", "descripcion_servicio",
+        fields = ("id", "nombre", "descripcion",
                   "precio", "precio_promo", "id_categoria", "id_resenia")
 
 

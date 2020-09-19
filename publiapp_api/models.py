@@ -102,8 +102,8 @@ class Resenia(models.Model):
 
 class Articulo(models.Model):
     """Datos de los articulos"""
-    nombre_articulo = models.CharField(max_length=100)
-    descripcion_articulo = models.CharField(max_length=300)
+    nombre = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=300)
     precio = models.FloatField()
     precio_promo = models.FloatField()
     id_categoria = models.ForeignKey(
@@ -121,13 +121,13 @@ class Articulo(models.Model):
 
     def __str__(self):
         """retorna el nombre del articulo"""
-        return self.nombre_articulo
+        return self.nombre
 
 
 class Negocio(models.Model):
     """Datos del Negocio"""
-    nombre_negocio = models.CharField(max_length=100)
-    descripcion_negocio = models.CharField(max_length=300)
+    nombre = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=300)
     precio = models.FloatField()
     precio_promo = models.FloatField()
     id_categoria = models.ForeignKey(
@@ -145,13 +145,13 @@ class Negocio(models.Model):
 
     def __str__(self):
         """retorna el nombre del negocio"""
-        return self.nombre_negocio
+        return self.nombre
 
 
 class Servicio(models.Model):
     """Datos del Servicio"""
-    nombre_servicio = models.CharField(max_length=100)
-    descripcion_servicio = models.CharField(max_length=300)
+    nombre = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=300)
     precio = models.FloatField()
     precio_promo = models.FloatField()
     id_categoria = models.ForeignKey(
@@ -169,7 +169,7 @@ class Servicio(models.Model):
 
     def __str__(self):
         """retorna el nombre del servicio"""
-        return self.nombre_servicio
+        return self.nombre
 
 
 class Anuncio(models.Model):
