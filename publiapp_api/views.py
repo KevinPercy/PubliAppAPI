@@ -70,27 +70,19 @@ class AnunciosViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsSafeMethod,)
 
 
-class ArticuloViewSet(viewsets.ModelViewSet):
-    """Administra la creaction y modificacion de articulos"""
+class DetalleAnuncioViewSet(viewsets.ModelViewSet):
+    """Administra la creaction y modificacion de detallesAnuncios"""
     authentication_classes = (TokenAuthentication,)
-    serializer_class = serializers.ArticuloSerializer
-    queryset = models.Articulo.objects.all()
+    serializer_class = serializers.DetalleAnuncioSerializer
+    queryset = models.DetalleAnuncio.objects.all()
     permission_classes = (permissions.IsSafeMethod,)
 
 
-class NegocioViewSet(viewsets.ModelViewSet):
-    """Administra la creaction y modificacion de negocios"""
+class PrecioViewSet(viewsets.ModelViewSet):
+    """Administra la creaction y modificacion de Precios"""
     authentication_classes = (TokenAuthentication,)
-    serializer_class = serializers.NegocioSerializer
-    queryset = models.Negocio.objects.all()
-    permission_classes = (permissions.IsSafeMethod,)
-
-
-class ServicioViewSet(viewsets.ModelViewSet):
-    """Administra la creaction y modificacion de negocios"""
-    authentication_classes = (TokenAuthentication,)
-    serializer_class = serializers.ServicioSerializer
-    queryset = models.Servicio.objects.all()
+    serializer_class = serializers.PrecioSerializer
+    queryset = models.Precio.objects.all()
     permission_classes = (permissions.IsSafeMethod,)
 
 

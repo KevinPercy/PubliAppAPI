@@ -2,21 +2,21 @@ from rest_framework import serializers
 from publiapp_api import models
 
 
-class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
-    def __init__(self, **kwargs):
-        self.serializer = kwargs.pop('serializer', None)
-        if self.serializer is not None and not issubclass(self.serializer, serializers.Serializer):
-            raise TypeError('"serializer" is not a valid serializer class')
+# class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
+#     def __init__(self, **kwargs):
+#         self.serializer = kwargs.pop('serializer', None)
+#         if self.serializer is not None and not issubclass(self.serializer, serializers.Serializer):
+#             raise TypeError('"serializer" is not a valid serializer class')
 
-        super().__init__(**kwargs)
+#         super().__init__(**kwargs)
 
-    def use_pk_only_optimization(self):
-        return False if self.serializer else True
+#     def use_pk_only_optimization(self):
+#         return False if self.serializer else True
 
-    def to_representation(self, instance):
-        if self.serializer:
-            return self.serializer(instance, context=self.context).data
-        return super().to_representation(instance)
+#     def to_representation(self, instance):
+#         if self.serializer:
+#             return self.serializer(instance, context=self.context).data
+#         return super().to_representation(instance)
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -49,7 +49,6 @@ class PasswordSerializer(serializers.Serializer):
     """
     Serializer for password change endpoint.
     """
-
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
@@ -59,6 +58,13 @@ class RolSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Rol
+        fields = "__all__"
+
+
+class ConstanstesSerializer(serializers.ModelSerializer):
+    """Serializer para Constantes"""
+    class Meta:
+        model = models.Constantes
         fields = "__all__"
 
 
@@ -90,28 +96,18 @@ class ReseniaSerializer(serializers.ModelSerializer):
         fields = ("id", "comentario", "puntuacion", "equipo")
 
 
-class ArticuloSerializer(serializers.ModelSerializer):
-    """Serializer para Articulos"""
+class DetalleAnuncioSerializer(serializers.ModelSerializer):
+    """Serializer para  detalles de anuncios"""
     class Meta:
-        model = models.Articulo
-        fields = ("id", "nombre", "descripcion",
-                  "precio", "precio_promo", "id_categoria", "id_resenia")
+        model = models.DetalleAnuncio
+        fields = "__all__"
 
 
-class NegocioSerializer(serializers.ModelSerializer):
-    """Serializer para negocios"""
+class PrecioSerializer(serializers.ModelSerializer):
+    """Serializer de precios"""
     class Meta:
-        model = models.Negocio
-        fields = ("id", "nombre", "descripcion",
-                  "precio", "precio_promo", "id_categoria", "id_resenia")
-
-
-class ServicioSerializer(serializers.ModelSerializer):
-    """Serializer para servicios"""
-    class Meta:
-        model = models.Servicio
-        fields = ("id", "nombre", "descripcion",
-                  "precio", "precio_promo", "id_categoria", "id_resenia")
+        model = models.Precio
+        fields = "__all__"
 
 
 class ImagenSerializer(serializers.ModelSerializer):
@@ -128,24 +124,25 @@ class AnunciosSerializer(serializers.ModelSerializer):
     """Serializer para anuncios"""
 
     imagenes = ImagenSerializer(many=True, read_only=True)
-    articulo = ArticuloSerializer(read_only=True)
-    articulo_id = serializers.PrimaryKeyRelatedField(
-        queryset=models.Articulo.objects.all(),
-        source='articulo', write_only=True, allow_null=True)
-    negocio = NegocioSerializer(read_only=True)
-    negocio_id = serializers.PrimaryKeyRelatedField(
-        queryset=models.Negocio.objects.all(),
-        source='negocio', write_only=True, allow_null=True)
-    servicio = ServicioSerializer(read_only=True)
-    servicio_id = serializers.PrimaryKeyRelatedField(
-        queryset=models.Servicio.objects.all(),
-        source='servicio', write_only=True, allow_null=True)
+    detalleAnuncio = DetalleAnuncioSerializer(many=True, read_only=True)
+    precios = PrecioSerializer(many=True, read_only=True)
+    # DetalleAnuncio_id = serializers.PrimaryKeyRelatedField(
+    #     queryset=models.Articulo.objects.all(),
+    #     source='articulo', write_only=True, allow_null=True)
+    # negocio = NegocioSerializer(read_only=True)
+    # negocio_id = serializers.PrimaryKeyRelatedField(
+    #     queryset=models.Negocio.objects.all(),
+    #     source='negocio', write_only=True, allow_null=True)
+    # servicio = ServicioSerializer(read_only=True)
+    # servicio_id = serializers.PrimaryKeyRelatedField(
+    #     queryset=models.Servicio.objects.all(),
+    #     source='servicio', write_only=True, allow_null=True)
 
     class Meta:
         model = models.Anuncio
         fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
-                  "estado", "nivel_anuncio", "anunciante", "articulo", "negocio", "servicio", "imagenes",
-                  "articulo_id", "negocio_id", "servicio_id")
+                  "estado", "nivel_anuncio", "anunciante", "detalleAnuncio", "precios", "imagenes"
+                  )
 
     # def create(self, validated_data):
     #     anuncio = models.Anuncio(titulo_anuncio=validated_data.get("titulo_anuncio"),
