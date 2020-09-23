@@ -172,7 +172,7 @@ class Precio(models.Model):
     """Datos de los precios por anuncio"""
     anuncio = models.ForeignKey(
         Anuncio,
-        related_name='precio',
+        related_name='precios',
         on_delete=models.CASCADE
     )
     concepto = models.CharField(max_length=100)

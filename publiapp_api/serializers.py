@@ -2,23 +2,6 @@ from rest_framework import serializers
 from publiapp_api import models
 
 
-# class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
-#     def __init__(self, **kwargs):
-#         self.serializer = kwargs.pop('serializer', None)
-#         if self.serializer is not None and not issubclass(self.serializer, serializers.Serializer):
-#             raise TypeError('"serializer" is not a valid serializer class')
-
-#         super().__init__(**kwargs)
-
-#     def use_pk_only_optimization(self):
-#         return False if self.serializer else True
-
-#     def to_representation(self, instance):
-#         if self.serializer:
-#             return self.serializer(instance, context=self.context).data
-#         return super().to_representation(instance)
-
-
 class UserProfileSerializer(serializers.ModelSerializer):
     """serializes a user profile object"""
 
@@ -126,42 +109,9 @@ class AnunciosSerializer(serializers.ModelSerializer):
     imagenes = ImagenSerializer(many=True, read_only=True)
     detalleAnuncio = DetalleAnuncioSerializer(many=True, read_only=True)
     precios = PrecioSerializer(many=True, read_only=True)
-    # DetalleAnuncio_id = serializers.PrimaryKeyRelatedField(
-    #     queryset=models.Articulo.objects.all(),
-    #     source='articulo', write_only=True, allow_null=True)
-    # negocio = NegocioSerializer(read_only=True)
-    # negocio_id = serializers.PrimaryKeyRelatedField(
-    #     queryset=models.Negocio.objects.all(),
-    #     source='negocio', write_only=True, allow_null=True)
-    # servicio = ServicioSerializer(read_only=True)
-    # servicio_id = serializers.PrimaryKeyRelatedField(
-    #     queryset=models.Servicio.objects.all(),
-    #     source='servicio', write_only=True, allow_null=True)
 
     class Meta:
         model = models.Anuncio
         fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
                   "estado", "nivel_anuncio", "anunciante", "detalleAnuncio", "precios", "imagenes"
                   )
-
-    # def create(self, validated_data):
-    #     anuncio = models.Anuncio(titulo_anuncio=validated_data.get("titulo_anuncio"),
-    #                              fecha_anuncio=validated_data.get(
-    #                                  "fecha_anuncio"),
-    #                              fecha_fin=validated_data.get("fecha_fin"),
-    #                              direccion=validated_data.get("direccion"),
-    #                              telefono1=validated_data.get("telefono1"),
-    #                              telefono2=validated_data.get("telefono2"),
-    #                              estado=validated_data.get("estado"),
-    #                              nivel_anuncio=validated_data.get(
-    #                                  "nivel_anuncio"),
-    #                              id_anunciante=validated_data.get(
-    #                                  "id_anunciante"),
-    #                              id_articulo=validated_data.get("id_articulo"),
-    #                              id_servicio=validated_data.get("id_servicio")
-    #                              )
-    #     anuncio.save()
-    #     # imagenes = validated_data.get('imagenes')
-    #     # for imagen in imagenes:
-    #     #     models.Imagen.objects.create(id_anuncio=anuncio, **imagen)
-    #     return validated_data
