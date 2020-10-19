@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'publiapp_api',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,11 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:19002',
 
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
 
 ROOT_URLCONF = 'publiapp_project.urls'
 

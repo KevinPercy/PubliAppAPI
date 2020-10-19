@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.authtoken.models import Token
 from rest_framework.parsers import FileUploadParser
+from django_filters.rest_framework import DjangoFilterBackend
 
 from publiapp_api import serializers
 from publiapp_api import models
@@ -63,11 +64,23 @@ class UserLoginApiView(ObtainAuthToken):
 class AnunciosViewSet(viewsets.ModelViewSet):
     """Administra la creacion y modificacion de anuncios"""
     search_fields = ['titulo_anuncio']
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
+    filterset_fields = {
+        'id': ['exact', 'gte', 'lte', 'ne']
+    }
     authentication_classes = (TokenAuthentication,)
     serializer_class = serializers.AnunciosSerializer
     queryset = models.Anuncio.objects.all()
     permission_classes = (permissions.IsSafeMethod,)
+
+    @action(detail=False, methods=['GET', ], url_path='get-topten')
+    def get_topten(self, request):
+        serializer = serializers.BuscarAnuncioSerializer(data=request.data)
+        if serializer.is_valid():
+            topten = models.Anuncio.objects.filter(
+                titulo_anuncio__icontains=serializer.data.get("titulo_anuncio"))[:3]
+            return Response(topten)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DetalleAnuncioViewSet(viewsets.ModelViewSet):
@@ -75,6 +88,14 @@ class DetalleAnuncioViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     serializer_class = serializers.DetalleAnuncioSerializer
     queryset = models.DetalleAnuncio.objects.all()
+    permission_classes = (permissions.IsSafeMethod,)
+
+
+class ArticuloOcacionalViewSet(viewsets.ModelViewSet):
+    """Administra la creaction y modificacion de detallesAnuncios"""
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = serializers.ArticuloOcacionalSerializer
+    queryset = models.ArticuloOcacional.objects.all()
     permission_classes = (permissions.IsSafeMethod,)
 
 

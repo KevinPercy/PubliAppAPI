@@ -5,6 +5,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.conf import settings
 from django.utils import timezone
+from django.db.models import Lookup
 
 
 class UserProfileManager(BaseUserManager):
@@ -52,6 +53,52 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """Return the string representation of our user"""
         return self.email
+
+
+class Ubigeo(models.Model):
+    """Datos de Rol"""
+    codigo_ubigeo = models.CharField(max_length=6)
+    departamento = models.CharField(max_length=50)
+    provincia = models.CharField(max_length=50)
+    distrito = models.CharField(max_length=50)
+
+    def __str__(self):
+        """retornar el valor de rol """
+        return self.codigo_ubigeo
+
+
+class LogBusqueda(models.Model):
+    """Datos de Rol"""
+    palabra = models.CharField(max_length=30)
+    dispositivo = models.CharField(max_length=50)
+    fecha = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        """retornar el valor de rol """
+        return self.palabra+self.fecha.strftime("%Y%m%d%H%M%S")
+
+
+class LogDetalleAnuncio(models.Model):
+    """Datos de Rol"""
+    id_anuncio = models.CharField(max_length=40)
+    dispositivo = models.CharField(max_length=50)
+    fecha = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        """retornar el valor de rol """
+        return self.fecha.strftime("%Y%m%d%H%M%S")+self.id_anuncio
+
+
+class LogContacto(models.Model):
+    """Datos de Rol"""
+    id_anuncio = models.CharField(max_length=40)
+    dispositivo = models.CharField(max_length=50)
+    fecha = models.DateTimeField(default=timezone.now)
+    nro_telefono = models.CharField(max_length=15)
+
+    def __str__(self):
+        """retornar el valor de rol """
+        return self.fecha.strftime("%Y%m%d%H%M%S")+self.nro_telefono
 
 
 class Rol(models.Model):
@@ -103,18 +150,6 @@ class Categoria(models.Model):
         return self.nombre_categoria
 
 
-class Resenia(models.Model):
-    """Datos de las Resenias"""
-    comentario = models.CharField(max_length=40)
-    puntuacion = models.IntegerField(default=0)
-    equipo = models.CharField(max_length=100, default='ND')  # No Definido
-    usuario = models.CharField(max_length=100)
-
-    def __str__(self):
-        """retorna el nombre de la resenia"""
-        return self.equipo
-
-
 class Anuncio(models.Model):
     """Datos de anuncio"""
     titulo_anuncio = models.CharField(max_length=100)
@@ -130,6 +165,11 @@ class Anuncio(models.Model):
         models.SET_NULL,
         blank=True,
         null=True,
+    )
+    ubigeo = models.ForeignKey(
+        Ubigeo,
+        related_name='ubigeo',
+        on_delete=models.CASCADE
     )
 
     def __str__(self):
@@ -156,8 +196,23 @@ class DetalleAnuncio(models.Model):
         blank=True,
         null=True,
     )
-    id_resenia = models.ForeignKey(
-        Resenia,
+
+    def __str__(self):
+        """retorna el nombre del articulo"""
+        return self.nombre
+
+
+class ArticuloOcacional(models.Model):
+    """Datos de los anuncios ocacionales (Articulo, Negocio, Servicio)"""
+    anuncio = models.ForeignKey(
+        Anuncio,
+        related_name='articuloOcacional',
+        on_delete=models.CASCADE
+    )
+    nombre = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=800)
+    id_categoria = models.ForeignKey(
+        Categoria,
         models.SET_NULL,
         blank=True,
         null=True,
@@ -166,6 +221,23 @@ class DetalleAnuncio(models.Model):
     def __str__(self):
         """retorna el nombre del articulo"""
         return self.nombre
+
+
+class Resenia(models.Model):
+    """Datos de las Resenias"""
+    anuncio = models.ForeignKey(
+        Anuncio,
+        related_name='resenia',
+        on_delete=models.CASCADE
+    )
+    comentario = models.CharField(max_length=40)
+    puntuacion = models.IntegerField(default=0)
+    equipo = models.CharField(max_length=100, default='ND')  # No Definido
+    usuario = models.CharField(max_length=100)
+
+    def __str__(self):
+        """retorna el nombre de la resenia"""
+        return self.equipo
 
 
 class Precio(models.Model):
@@ -178,6 +250,7 @@ class Precio(models.Model):
     concepto = models.CharField(max_length=100)
     monto = models.FloatField(default=0.0)
     monto_promo = models.FloatField(default=0.0)
+    moneda = models.IntegerField(default=0)
 
     def __str__(self):
         """Retorna concepto Precio"""
@@ -196,3 +269,13 @@ class Imagen(models.Model):
 
     def __str__(self):
         return self.imagen.name
+
+
+class NotEqual(Lookup):
+    lookup_name = 'ne'
+
+    def as_sql(self, compiler, connection):
+        lhs, lhs_params = self.process_lhs(compiler, connection)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params
+        return '%s <> %s' % (lhs, rhs), params

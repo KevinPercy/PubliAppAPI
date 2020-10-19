@@ -51,6 +51,13 @@ class ConstanstesSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class UbigeoSerializer(serializers.ModelSerializer):
+    """Serializer para Ubigeo"""
+    class Meta:
+        model = models.Ubigeo
+        fields = "__all__"
+
+
 class AnuncianteSerializer(serializers.ModelSerializer):
     """Serializer para anunciantes"""
 
@@ -76,13 +83,20 @@ class ReseniaSerializer(serializers.ModelSerializer):
     """Serializer para resenia"""
     class Meta:
         model = models.Resenia
-        fields = ("id", "comentario", "puntuacion", "equipo")
+        fields = "__all__"
 
 
 class DetalleAnuncioSerializer(serializers.ModelSerializer):
     """Serializer para  detalles de anuncios"""
     class Meta:
         model = models.DetalleAnuncio
+        fields = "__all__"
+
+
+class ArticuloOcacionalSerializer(serializers.ModelSerializer):
+    """Serializer para  articulos ocacionales"""
+    class Meta:
+        model = models.ArticuloOcacional
         fields = "__all__"
 
 
@@ -108,10 +122,21 @@ class AnunciosSerializer(serializers.ModelSerializer):
 
     imagenes = ImagenSerializer(many=True, read_only=True)
     detalleAnuncio = DetalleAnuncioSerializer(many=True, read_only=True)
+    articuloOcacional = ArticuloOcacionalSerializer(many=True, read_only=True)
     precios = PrecioSerializer(many=True, read_only=True)
+    resenia = ReseniaSerializer(many=True, read_only=True)
+    ubigeo = UbigeoSerializer(read_only=True)
+    ubigeo_id = serializers.PrimaryKeyRelatedField(queryset=models.Ubigeo.objects.all(),
+                                                   source='ubigeo', write_only=True, allow_null=False)
 
     class Meta:
         model = models.Anuncio
         fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
-                  "estado", "nivel_anuncio", "anunciante", "detalleAnuncio", "precios", "imagenes"
+                  "estado", "nivel_anuncio", "anunciante", "detalleAnuncio", "articuloOcacional", "precios",
+                  "imagenes", "ubigeo", "ubigeo_id", "resenia"
                   )
+
+
+class BuscarAnuncioSerializer(serializers.Serializer):
+    """Serializador para el buscador de anuncios"""
+    titulo_anuncio = serializers.CharField(required=True)
