@@ -63,24 +63,15 @@ class UserLoginApiView(ObtainAuthToken):
 
 class AnunciosViewSet(viewsets.ModelViewSet):
     """Administra la creacion y modificacion de anuncios"""
-    search_fields = ['titulo_anuncio']
+    search_fields = ['titulo_anuncio', 'detalleAnuncio__categoria__id']
     filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
-    filterset_fields = {
-        'id': ['exact', 'gte', 'lte', 'ne']
-    }
+    # filterset_fields = {
+    #     'detalleAnuncio': ['exact', 'gte', 'lte', 'ne']
+    # }
     authentication_classes = (TokenAuthentication,)
     serializer_class = serializers.AnunciosSerializer
     queryset = models.Anuncio.objects.all()
     permission_classes = (permissions.IsSafeMethod,)
-
-    @action(detail=False, methods=['GET', ], url_path='get-topten')
-    def get_topten(self, request):
-        serializer = serializers.BuscarAnuncioSerializer(data=request.data)
-        if serializer.is_valid():
-            topten = models.Anuncio.objects.filter(
-                titulo_anuncio__icontains=serializer.data.get("titulo_anuncio"))[:3]
-            return Response(topten)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DetalleAnuncioViewSet(viewsets.ModelViewSet):

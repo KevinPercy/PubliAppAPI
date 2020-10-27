@@ -86,6 +86,13 @@ class ReseniaSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class FilteredDetalleSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        qry_categoria = self.context['request'].GET.get('id_categoria')
+        data = data.filter(id_categoria=qry_categoria)
+        return super(FilteredDetalleSerializer,  self).to_representation(data)
+
+
 class DetalleAnuncioSerializer(serializers.ModelSerializer):
     """Serializer para  detalles de anuncios"""
     class Meta:
@@ -126,17 +133,19 @@ class AnunciosSerializer(serializers.ModelSerializer):
     precios = PrecioSerializer(many=True, read_only=True)
     resenia = ReseniaSerializer(many=True, read_only=True)
     ubigeo = UbigeoSerializer(read_only=True)
+    # id_categoria = serializers.SerializerMethodField('get_categoriaID')
     ubigeo_id = serializers.PrimaryKeyRelatedField(queryset=models.Ubigeo.objects.all(),
                                                    source='ubigeo', write_only=True, allow_null=False)
+
+    # def get_categoriaID(self, obj):
+    #     categoria_id = models.DetalleAnuncio.objects.filter(id_categoria=obj)
+    #     serializer = DetalleAnuncioSerializer(
+    #         categoria_id)
+    #     return serializer.data
 
     class Meta:
         model = models.Anuncio
         fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
                   "estado", "nivel_anuncio", "anunciante", "detalleAnuncio", "articuloOcacional", "precios",
-                  "imagenes", "ubigeo", "ubigeo_id", "resenia"
+                  "imagenes", "ubigeo", "ubigeo_id", "resenia",
                   )
-
-
-class BuscarAnuncioSerializer(serializers.Serializer):
-    """Serializador para el buscador de anuncios"""
-    titulo_anuncio = serializers.CharField(required=True)

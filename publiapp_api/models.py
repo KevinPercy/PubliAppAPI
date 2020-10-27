@@ -190,11 +190,10 @@ class DetalleAnuncio(models.Model):
         Constantes,
         on_delete=models.CASCADE,
     )
-    id_categoria = models.ForeignKey(
+    categoria = models.ForeignKey(
         Categoria,
-        models.SET_NULL,
-        blank=True,
-        null=True,
+        related_name='categoria',
+        on_delete=models.CASCADE
     )
 
     def __str__(self):
