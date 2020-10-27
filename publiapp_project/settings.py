@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'wp*d(+reycmlf(!h!l$5a_z+m37p2#x#wlo3%_w0*y7&vyy7z4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.environ.get('DEBUG', 1)))
 
 ALLOWED_HOSTS = ['192.168.0.108', '127.0.0.1']
 
@@ -138,3 +138,5 @@ AUTH_USER_MODEL = 'publiapp_api.UserProfile'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+STATIC_ROOT = 'static/'
