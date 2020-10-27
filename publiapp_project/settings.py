@@ -24,7 +24,8 @@ SECRET_KEY = 'wp*d(+reycmlf(!h!l$5a_z+m37p2#x#wlo3%_w0*y7&vyy7z4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DEBUG', 1)))
 
-ALLOWED_HOSTS = ['192.168.0.108', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.0.108',
+                 'ec2-52-14-23-139.us-east-2.compute.amazonaws.com', '127.0.0.1', ]
 
 
 # Application definition
