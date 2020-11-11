@@ -61,7 +61,9 @@ class Ubigeo(models.Model):
     departamento = models.CharField(max_length=50)
     provincia = models.CharField(max_length=50)
     distrito = models.CharField(max_length=50)
-
+    latitud = models.CharField(max_length= 15)
+    longitud = models.CharField(max_length=15)
+    
     def __str__(self):
         """retornar el valor de rol """
         return self.codigo_ubigeo
