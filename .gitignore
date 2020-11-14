@@ -62,7 +62,8 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
-#db.sqlite3 KEVIN JOJHAN 20201109
+db.sqlite3 
+#KEVIN JOJHAN 20201109
 
 # Flask stuff:
 instance/

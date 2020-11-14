@@ -4,10 +4,10 @@ from publiapp_api import models
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """serializes a user profile object"""
-
     class Meta:
         model = models.UserProfile
-        fields = ("id", "email", "name", "password")
+        fields = ("id", "name", "last_name", "dni", "id_rol", "email",
+                  "password")
         extra_kwargs = {
             "password": {
                 "write_only": True,
@@ -22,8 +22,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user = models.UserProfile.objects.create_user(
             email=validated_data["email"],
             name=validated_data["name"],
-            password=validated_data["password"]
-        )
+            last_name=validated_data["last_name"],
+            dni=validated_data["dni"],
+            id_rol=validated_data["id_rol"],
+            password=validated_data["password"])
 
         return user
 
@@ -38,7 +40,6 @@ class PasswordSerializer(serializers.Serializer):
 
 class RolSerializer(serializers.ModelSerializer):
     """Serializer para Roles"""
-
     class Meta:
         model = models.Rol
         fields = "__all__"
@@ -60,11 +61,10 @@ class UbigeoSerializer(serializers.ModelSerializer):
 
 class AnuncianteSerializer(serializers.ModelSerializer):
     """Serializer para anunciantes"""
-
     class Meta:
         model = models.Anunciante
-        fields = ("id", "nombre", "apellidos", "dni",
-                  "email", "fecha_registro", "id_rol")
+        fields = ("id", "nombre", "apellidos", "dni", "email",
+                  "fecha_registro", "id_rol")
         # extra_kwargs = {
         #     'id_rol': {
         #         'read_only': True
@@ -90,7 +90,7 @@ class FilteredDetalleSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         qry_categoria = self.context['request'].GET.get('id_categoria')
         data = data.filter(id_categoria=qry_categoria)
-        return super(FilteredDetalleSerializer,  self).to_representation(data)
+        return super(FilteredDetalleSerializer, self).to_representation(data)
 
 
 class DetalleAnuncioSerializer(serializers.ModelSerializer):
@@ -116,6 +116,7 @@ class PrecioSerializer(serializers.ModelSerializer):
 
 class ImagenSerializer(serializers.ModelSerializer):
     """Serializer para las imagenes"""
+
     # imagen = serializers.ImageField(max_length=None, use_url=True)
     # es_principal = serializers.BooleanField(default=False)
 
@@ -134,8 +135,11 @@ class AnunciosSerializer(serializers.ModelSerializer):
     resenia = ReseniaSerializer(many=True, read_only=True)
     ubigeo = UbigeoSerializer(read_only=True)
     # id_categoria = serializers.SerializerMethodField('get_categoriaID')
-    ubigeo_id = serializers.PrimaryKeyRelatedField(queryset=models.Ubigeo.objects.all(),
-                                                   source='ubigeo', write_only=True, allow_null=False)
+    ubigeo_id = serializers.PrimaryKeyRelatedField(
+        queryset=models.Ubigeo.objects.all(),
+        source='ubigeo',
+        write_only=True,
+        allow_null=False)
 
     # def get_categoriaID(self, obj):
     #     categoria_id = models.DetalleAnuncio.objects.filter(id_categoria=obj)
@@ -145,7 +149,22 @@ class AnunciosSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Anuncio
-        fields = ("id", "titulo_anuncio", "fecha_anuncio", "fecha_fin", "direccion", "telefono1", "telefono2",
-                  "estado", "nivel_anuncio", "anunciante", "detalleAnuncio", "articuloOcacional", "precios",
-                  "imagenes", "ubigeo", "ubigeo_id", "resenia",
-                  )
+        fields = (
+            "id",
+            "titulo_anuncio",
+            "fecha_anuncio",
+            "fecha_fin",
+            "direccion",
+            "telefono1",
+            "telefono2",
+            "estado",
+            "nivel_anuncio",
+            "anunciante",
+            "detalleAnuncio",
+            "articuloOcacional",
+            "precios",
+            "imagenes",
+            "ubigeo",
+            "ubigeo_id",
+            "resenia",
+        )

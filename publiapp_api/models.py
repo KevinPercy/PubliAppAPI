@@ -10,23 +10,26 @@ from django.db.models import Lookup
 
 class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
-
-    def create_user(self, email, name, password=None):
+    def create_user(self, email, name, last_name, dni, id_rol, password=None):
         """Create a new user profile"""
         if not email:
             raise ValueError("Users must have an email address")
 
         email = self.normalize_email(email)  # takes care of the second half
-        user = self.model(email=email, name=name)
+        user = self.model(email=email,
+                          name=name,
+                          last_name=last_name,
+                          dni=dni,
+                          id_rol=id_rol)
 
         user.set_password(password)
         user.save(using=self._db)
 
         return user
 
-    def create_superuser(self, email, name, password):
+    def create_superuser(self, email, password):
         """Create and save a new superuser with given details"""
-        user = self.create_user(email, name, password)
+        user = self.create_user(email, password)
 
         user.is_superuser = True  # automatically created in the PermissionsMixin
         user.is_staff = True
@@ -36,19 +39,36 @@ class UserProfileManager(BaseUserManager):
         return user
 
 
+class Rol(models.Model):
+    """Datos de Rol"""
+    rol = models.CharField(max_length=2)
+
+    def __str__(self):
+        """retornar el valor de rol """
+        return self.rol
+
+
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     """Database model for users in the system"""
 
     email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=120)
+    last_name = models.CharField(max_length=120)
+    dni = models.CharField(max_length=8)
+    date_joined = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(default=timezone.now)
-
+    id_rol = models.ForeignKey(
+        Rol,
+        models.SET_NULL,
+        blank=True,
+        null=True,
+    )
     objects = UserProfileManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['name']
+
+    #REQUIRED_FIELDS = ['email']
 
     def __str__(self):
         """Return the string representation of our user"""
@@ -61,9 +81,9 @@ class Ubigeo(models.Model):
     departamento = models.CharField(max_length=50)
     provincia = models.CharField(max_length=50)
     distrito = models.CharField(max_length=50)
-    latitud = models.CharField(max_length= 15)
+    latitud = models.CharField(max_length=15)
     longitud = models.CharField(max_length=15)
-    
+
     def __str__(self):
         """retornar el valor de rol """
         return self.codigo_ubigeo
@@ -77,7 +97,7 @@ class LogBusqueda(models.Model):
 
     def __str__(self):
         """retornar el valor de rol """
-        return self.palabra+self.fecha.strftime("%Y%m%d%H%M%S")
+        return self.palabra + self.fecha.strftime("%Y%m%d%H%M%S")
 
 
 class LogDetalleAnuncio(models.Model):
@@ -88,7 +108,7 @@ class LogDetalleAnuncio(models.Model):
 
     def __str__(self):
         """retornar el valor de rol """
-        return self.fecha.strftime("%Y%m%d%H%M%S")+self.id_anuncio
+        return self.fecha.strftime("%Y%m%d%H%M%S") + self.id_anuncio
 
 
 class LogContacto(models.Model):
@@ -100,16 +120,7 @@ class LogContacto(models.Model):
 
     def __str__(self):
         """retornar el valor de rol """
-        return self.fecha.strftime("%Y%m%d%H%M%S")+self.nro_telefono
-
-
-class Rol(models.Model):
-    """Datos de Rol"""
-    rol = models.CharField(max_length=2)
-
-    def __str__(self):
-        """retornar el valor de rol """
-        return self.rol
+        return self.fecha.strftime("%Y%m%d%H%M%S") + self.nro_telefono
 
 
 class Constantes(models.Model):
@@ -168,11 +179,9 @@ class Anuncio(models.Model):
         blank=True,
         null=True,
     )
-    ubigeo = models.ForeignKey(
-        Ubigeo,
-        related_name='ubigeo',
-        on_delete=models.CASCADE
-    )
+    ubigeo = models.ForeignKey(Ubigeo,
+                               related_name='ubigeo',
+                               on_delete=models.CASCADE)
 
     def __str__(self):
         """Retornar el titulo del anuncio como string"""
@@ -181,22 +190,18 @@ class Anuncio(models.Model):
 
 class DetalleAnuncio(models.Model):
     """Datos de los anuncios(Articulo, Negocio, Servicio)"""
-    anuncio = models.ForeignKey(
-        Anuncio,
-        related_name='detalleAnuncio',
-        on_delete=models.CASCADE
-    )
+    anuncio = models.ForeignKey(Anuncio,
+                                related_name='detalleAnuncio',
+                                on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=800)
     tipoAnuncio = models.ForeignKey(
         Constantes,
         on_delete=models.CASCADE,
     )
-    categoria = models.ForeignKey(
-        Categoria,
-        related_name='categoria',
-        on_delete=models.CASCADE
-    )
+    categoria = models.ForeignKey(Categoria,
+                                  related_name='categoria',
+                                  on_delete=models.CASCADE)
 
     def __str__(self):
         """retorna el nombre del articulo"""
@@ -205,11 +210,9 @@ class DetalleAnuncio(models.Model):
 
 class ArticuloOcacional(models.Model):
     """Datos de los anuncios ocacionales (Articulo, Negocio, Servicio)"""
-    anuncio = models.ForeignKey(
-        Anuncio,
-        related_name='articuloOcacional',
-        on_delete=models.CASCADE
-    )
+    anuncio = models.ForeignKey(Anuncio,
+                                related_name='articuloOcacional',
+                                on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=800)
     id_categoria = models.ForeignKey(
@@ -226,11 +229,9 @@ class ArticuloOcacional(models.Model):
 
 class Resenia(models.Model):
     """Datos de las Resenias"""
-    anuncio = models.ForeignKey(
-        Anuncio,
-        related_name='resenia',
-        on_delete=models.CASCADE
-    )
+    anuncio = models.ForeignKey(Anuncio,
+                                related_name='resenia',
+                                on_delete=models.CASCADE)
     comentario = models.CharField(max_length=40)
     puntuacion = models.IntegerField(default=0)
     equipo = models.CharField(max_length=100, default='ND')  # No Definido
@@ -243,11 +244,9 @@ class Resenia(models.Model):
 
 class Precio(models.Model):
     """Datos de los precios por anuncio"""
-    anuncio = models.ForeignKey(
-        Anuncio,
-        related_name='precios',
-        on_delete=models.CASCADE
-    )
+    anuncio = models.ForeignKey(Anuncio,
+                                related_name='precios',
+                                on_delete=models.CASCADE)
     concepto = models.CharField(max_length=100)
     monto = models.FloatField(default=0.0)
     monto_promo = models.FloatField(default=0.0)
@@ -262,11 +261,9 @@ class Imagen(models.Model):
     """Datos de la imagen"""
     imagen = models.FileField(blank=False, null=False)
     es_principal = models.BooleanField(default=False)
-    id_anuncio = models.ForeignKey(
-        Anuncio,
-        on_delete=models.CASCADE,
-        related_name='imagenes'
-    )
+    id_anuncio = models.ForeignKey(Anuncio,
+                                   on_delete=models.CASCADE,
+                                   related_name='imagenes')
 
     def __str__(self):
         return self.imagen.name

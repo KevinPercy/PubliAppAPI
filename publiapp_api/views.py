@@ -58,7 +58,7 @@ class UserLoginApiView(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         response = super(UserLoginApiView, self).post(request, *args, **kwargs)
         token = Token.objects.get(key=response.data["token"])
-        return Response({"token": token.key, "id": token.user_id})
+        return Response({"token": token.key, "user_id": token.user_id})
 
 
 class AnunciosViewSet(viewsets.ModelViewSet):
